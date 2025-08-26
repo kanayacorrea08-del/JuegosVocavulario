@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Panel de Administración - Learn English</title>
+    
+    <!-- Estilos principales del sitio -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Panel de administración para gestionar el vocabulario de Learn English">
+    <meta name="keywords" content="admin, administración, vocabulario, inglés, educación">
+    <meta name="author" content="Learn English Team">
+</head>
+<body>
+    <!-- Header con el mismo estilo que el index -->
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-container">
+                    <div class="logo-image-wrapper">
+                        <img src="img/logo.webp" alt="Logo CINTIA" class="logo-image" loading="lazy">
+                    </div>
+                    <h1>Learn English - Admin</h1>
+                </div>
+            </div>
+            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">🏠 Volver al Sitio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main style="margin-top: 80px;">
+        <div class="container">
+            <!-- Sección de Login -->
+            <section id="admin-login-section" class="admin-login-section">
+                <div class="login-container">
+                    <div class="login-header">
+                        <h2>🔐 Acceso de Administrador</h2>
+                        <p>Ingresa tus credenciales para acceder al panel de administración</p>
+                    </div>
+                    
+                    <form id="admin-login-form" class="admin-login-form">
+                        <div class="form-group">
+                            <label for="admin-username">Usuario:</label>
+                            <input type="text" id="admin-username" name="username" required 
+                                   placeholder="admin, teacher, demo">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="admin-password">Contraseña:</label>
+                            <input type="password" id="admin-password" name="password" required 
+                                   placeholder="admin123, teacher123, demo123">
+                        </div>
+                        
+                        <button type="submit" class="cta-button">
+                            🔑 Acceder al Panel
+                        </button>
+                    </form>
+                    
+                    <div id="login-message" class="login-message"></div>
+                    
+                    <div class="login-help">
+                        <h4>📋 Credenciales de Prueba:</h4>
+                        <ul>
+                            <li><strong>admin</strong> / admin123 (Administrador completo)</li>
+                            <li><strong>teacher</strong> / teacher123 (Profesor)</li>
+                            <li><strong>demo</strong> / demo123 (Demo limitado)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel de Administración -->
+            <section id="admin-panel-section" class="admin-panel-section" style="display: none;">
+                <div class="admin-panel-container">
+                    <!-- Header del Panel -->
+                    <div class="panel-header">
+                        <div class="user-info">
+                            <h3>👋 Bienvenido, <span id="admin-user-name">Administrador</span></h3>
+                            <p id="admin-user-role">Rol: <span id="user-role">Administrador</span></p>
+                            <p id="admin-session-time">Sesión iniciada: <span id="session-time"></span></p>
+                        </div>
+                        <div class="panel-actions">
+                            <button id="refresh-data-btn" class="btn btn-secondary">🔄 Actualizar</button>
+                            <button id="logout-btn" class="btn btn-danger">🚪 Cerrar Sesión</button>
+                        </div>
+                    </div>
+
+                    <!-- Navegación por Pestañas -->
+                    <div class="admin-tabs">
+                        <button class="tab-btn active" data-tab="dashboard">
+                            📊 Dashboard
+                        </button>
+                        <button class="tab-btn" data-tab="categories">
+                            📁 Categorías
+                        </button>
+                        <button class="tab-btn" data-tab="words">
+                            📝 Vocabulario
+                        </button>
+                        <button class="tab-btn" data-tab="backup">
+                            💾 Backup
+                        </button>
+                        <button class="tab-btn" data-tab="settings">
+                            ⚙️ Configuración
+                        </button>
+                    </div>
+
+                    <!-- Contenido de las Pestañas -->
+                    <div class="tab-content">
+                        <!-- Dashboard -->
+                        <div id="dashboard-tab" class="tab-pane active">
+                            <div class="dashboard-grid">
+                                <div class="dashboard-card">
+                                    <h4>📊 Estadísticas del Sistema</h4>
+                                    <div id="stats-content" class="stats-content">
+                                        <div class="loading">Cargando estadísticas...</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="dashboard-card">
+                                    <h4>📈 Actividad Reciente</h4>
+                                    <div id="recent-activity" class="recent-activity">
+                                        <div class="loading">Cargando actividad...</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="dashboard-card">
+                                    <h4>🎯 Acciones Rápidas</h4>
+                                    <div class="quick-actions">
+                                        <button class="btn btn-primary" onclick="adminCore.showAddCategoryModal()">
+                                            ➕ Nueva Categoría
+                                        </button>
+                                        <button class="btn btn-success" onclick="adminCore.showAddWordModal()">
+                                            📝 Nueva Palabra
+                                        </button>
+                                        <button class="btn btn-warning" onclick="adminCore.createBackup()">
+                                            💾 Crear Backup
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="dashboard-card">
+                                    <h4>🔍 Búsqueda Rápida</h4>
+                                    <div class="quick-search">
+                                        <input type="text" id="quick-search-input" 
+                                               placeholder="Buscar palabras...">
+                                        <button class="btn btn-primary" onclick="adminCore.quickSearch()">
+                                            🔍 Buscar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Categorías -->
+                        <div id="categories-tab" class="tab-pane">
+                            <div class="categories-manager">
+                                <div class="manager-header">
+                                    <h4>📁 Gestión de Categorías</h4>
+                                    <button id="add-category-btn" class="btn btn-primary">
+                                        ➕ Nueva Categoría
+                                    </button>
+                                </div>
+                                
+                                <div class="categories-stats">
+                                    <div class="stat-card">
+                                        <span class="stat-number" id="total-categories">0</span>
+                                        <span class="stat-label">Categorías</span>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span class="stat-number" id="total-words">0</span>
+                                        <span class="stat-label">Palabras</span>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span class="stat-number" id="avg-words-per-category">0</span>
+                                        <span class="stat-label">Promedio</span>
+                                    </div>
+                                </div>
+                                
+                                <div id="categories-list" class="categories-list">
+                                    <div class="loading">Cargando categorías...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vocabulario -->
+                        <div id="words-tab" class="tab-pane">
+                            <div class="words-manager">
+                                <div class="manager-header">
+                                    <h4>📝 Gestión de Vocabulario</h4>
+                                    <button id="add-word-btn" class="btn btn-primary">
+                                        ➕ Nueva Palabra
+                                    </button>
+                                </div>
+                                
+                                <div class="search-bar">
+                                    <input type="text" id="word-search-input" 
+                                           placeholder="Buscar palabras en inglés o español...">
+                                    <select id="category-filter-select">
+                                        <option value="">Todas las categorías</option>
+                                    </select>
+                                    <button id="search-btn" class="btn btn-primary">🔍 Buscar</button>
+                                    <button id="clear-search-btn" class="btn btn-secondary">🗑️ Limpiar</button>
+                                </div>
+                                
+                                <div class="words-stats">
+                                    <span id="words-found-count">0 palabras encontradas</span>
+                                </div>
+                                
+                                <div id="words-list" class="words-list">
+                                    <div class="loading">Cargando vocabulario...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Backup -->
+                        <div id="backup-tab" class="tab-pane">
+                            <div class="backup-manager">
+                                <div class="manager-header">
+                                    <h4>💾 Backup y Restauración</h4>
+                                </div>
+                                
+                                <div class="backup-actions">
+                                    <button id="export-vocabulary-btn" class="btn btn-primary">
+                                        📤 Exportar Vocabulario
+                                    </button>
+                                    <button id="import-vocabulary-btn" class="btn btn-secondary">
+                                        📥 Importar Vocabulario
+                                    </button>
+                                    <button id="create-backup-btn" class="btn btn-success">
+                                        💾 Crear Backup
+                                    </button>
+                                    <button id="restore-backup-btn" class="btn btn-warning">
+                                        🔄 Restaurar Backup
+                                    </button>
+                                </div>
+                                
+                                <div class="backup-info">
+                                    <div class="info-card">
+                                        <h5>📊 Información de Backup</h5>
+                                        <p>Último backup: <span id="last-backup-time">Nunca</span></p>
+                                        <p>Backups disponibles: <span id="available-backups">0</span></p>
+                                        <p>Tamaño total: <span id="backup-size">0 KB</span></p>
+                                    </div>
+                                </div>
+                                
+                                <div id="backups-list" class="backups-list">
+                                    <div class="loading">Cargando backups...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Configuración -->
+                        <div id="settings-tab" class="tab-pane">
+                            <div class="settings-manager">
+                                <div class="manager-header">
+                                    <h4>⚙️ Configuración del Sistema</h4>
+                                </div>
+                                
+                                <div class="settings-form">
+                                    <div class="form-group">
+                                        <label for="session-timeout-setting">Tiempo de sesión (minutos):</label>
+                                        <input type="number" id="session-timeout-setting" 
+                                               min="5" max="120" value="30">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="max-categories-setting">Máximo de categorías:</label>
+                                        <input type="number" id="max-categories-setting" 
+                                               min="10" max="100" value="50">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="max-words-per-category-setting">Máximo de palabras por categoría:</label>
+                                        <input type="number" id="max-words-per-category-setting" 
+                                               min="20" max="200" value="100">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="auto-backup-setting">Backup automático:</label>
+                                        <select id="auto-backup-setting">
+                                            <option value="0">Desactivado</option>
+                                            <option value="3600000">Cada hora</option>
+                                            <option value="86400000">Diario</option>
+                                            <option value="604800000">Semanal</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="max-backups-setting">Máximo de backups:</label>
+                                        <input type="number" id="max-backups-setting" 
+                                               min="5" max="50" value="10">
+                                    </div>
+                                    
+                                    <button id="save-settings-btn" class="btn btn-primary">
+                                        💾 Guardar Configuración
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p class="text-slate-600 font-medium">Creado por:</p>
+        <p class="text-green-800 font-bold text-lg">Centro de Innovación en TIC para el apoyo de la Docencia CINTIA</p>
+        <p class="text-slate-500 text-sm">Universidad de Córdoba</p>
+        <p>&copy; 2024 Learn English - Juegos Interactivos</p>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Configuración -->
+    <script src="js/config/app-config.js"></script>
+    
+    <!-- Utilidades -->
+    <script src="js/utils/storage.js"></script>
+    <script src="js/utils/validation.js"></script>
+    
+    <!-- Gestores -->
+    <script src="js/admin/vocabulary-manager.js"></script>
+    <script src="js/admin/admin-core.js"></script>
+    
+    <!-- Script principal del admin -->
+    <script>
+        // Funciones del menú móvil (igual que en el index)
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            
+            navLinks.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            
+            navLinks.classList.remove('active');
+            menuToggle.classList.remove('active');
+        }
+
+        // Inicializar el sistema cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar el sistema de administración
+            if (typeof adminCore !== 'undefined') {
+                console.log('Sistema de administración inicializado');
+            } else {
+                console.error('Error: Sistema de administración no disponible');
+            }
+        });
+    </script>
+</body>
+</html>

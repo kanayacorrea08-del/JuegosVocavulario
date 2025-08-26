@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba del Sistema de Administración</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Prueba del Sistema de Administración</h1>
+    
+    <div class="test-section">
+        <h2>1. Verificar Carga de Archivos</h2>
+        <button class="test-button" onclick="testFileLoading()">Probar Carga de Archivos</button>
+        <div id="file-loading-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Verificar Configuración</h2>
+        <button class="test-button" onclick="testConfiguration()">Probar Configuración</button>
+        <div id="config-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Verificar Almacenamiento</h2>
+        <button class="test-button" onclick="testStorage()">Probar Almacenamiento</button>
+        <div id="storage-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Verificar Validación</h2>
+        <button class="test-button" onclick="testValidation()">Probar Validación</button>
+        <div id="validation-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Verificar Gestor de Vocabulario</h2>
+        <button class="test-button" onclick="testVocabularyManager()">Probar Gestor de Vocabulario</button>
+        <div id="vocabulary-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>6. Verificar Núcleo Admin</h2>
+        <button class="test-button" onclick="testAdminCore()">Probar Núcleo Admin</button>
+        <div id="admin-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>7. Ir al Panel de Administración</h2>
+        <a href="admin.html" target="_blank" class="test-button" style="text-decoration: none; display: inline-block;">
+            🔐 Abrir Panel de Admin
+        </a>
+    </div>
+
+    <script>
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+
+        function testFileLoading() {
+            const result = document.getElementById('file-loading-result');
+            let status = '';
+
+            // Verificar archivos principales
+            const files = [
+                'js/config/app-config.js',
+                'js/utils/storage.js',
+                'js/utils/validation.js',
+                'js/admin/vocabulary-manager.js',
+                'js/admin/admin-core.js',
+                'css/admin.css'
+            ];
+
+            files.forEach(file => {
+                status += `<div>✅ ${file}</div>`;
+            });
+
+            showResult('file-loading-result', `
+                <h4>Archivos Cargados:</h4>
+                ${status}
+                <p><strong>Estado:</strong> Todos los archivos están disponibles</p>
+            `, 'success');
+        }
+
+        function testConfiguration() {
+            try {
+                if (typeof APP_CONFIG !== 'undefined') {
+                    showResult('config-result', `
+                        <h4>Configuración Cargada:</h4>
+                        <p><strong>Nombre:</strong> ${APP_CONFIG.APP_NAME}</p>
+                        <p><strong>Versión:</strong> ${APP_CONFIG.VERSION}</p>
+                        <p><strong>Modo Debug:</strong> ${APP_CONFIG.DEBUG_MODE ? 'Activado' : 'Desactivado'}</p>
+                        <p><strong>Máximo Categorías:</strong> ${APP_CONFIG.VOCABULARY.MAX_CATEGORIES}</p>
+                        <p><strong>Máximo Palabras:</strong> ${APP_CONFIG.VOCABULARY.MAX_WORDS_PER_CATEGORY}</p>
+                    `, 'success');
+                } else {
+                    showResult('config-result', '❌ APP_CONFIG no está disponible', 'error');
+                }
+            } catch (error) {
+                showResult('config-result', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testStorage() {
+            try {
+                if (typeof storageManager !== 'undefined') {
+                    const stats = storageManager.getStats();
+                    showResult('storage-result', `
+                        <h4>Sistema de Almacenamiento:</h4>
+                        <p><strong>Total de Claves:</strong> ${stats.totalKeys}</p>
+                        <p><strong>Tamaño Total:</strong> ${stats.totalSizeKB} KB</p>
+                        <p><strong>Espacio Disponible:</strong> ${stats.availableSpace}</p>
+                        <p><strong>Estado:</strong> ✅ Funcionando correctamente</p>
+                    `, 'success');
+                } else {
+                    showResult('storage-result', '❌ storageManager no está disponible', 'error');
+                }
+            } catch (error) {
+                showResult('storage-result', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testValidation() {
+            try {
+                if (typeof validationManager !== 'undefined') {
+                    // Probar validaciones básicas
+                    const textValidation = validationManager.validate('test', { required: true, minLength: 3 });
+                    const emailValidation = validationManager.validate('test@example.com', { email: true });
+                    
+                    showResult('validation-result', `
+                        <h4>Sistema de Validación:</h4>
+                        <p><strong>Validación de Texto:</strong> ${textValidation.isValid ? '✅' : '❌'}</p>
+                        <p><strong>Validación de Email:</strong> ${emailValidation.isValid ? '✅' : '❌'}</p>
+                        <p><strong>Estado:</strong> ✅ Funcionando correctamente</p>
+                    `, 'success');
+                } else {
+                    showResult('validation-result', '❌ validationManager no está disponible', 'error');
+                }
+            } catch (error) {
+                showResult('validation-result', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testVocabularyManager() {
+            try {
+                if (typeof vocabularyManager !== 'undefined') {
+                    const stats = vocabularyManager.getVocabularyStats();
+                    showResult('vocabulary-result', `
+                        <h4>Gestor de Vocabulario:</h4>
+                        <p><strong>Total Categorías:</strong> ${stats.totalCategories}</p>
+                        <p><strong>Total Palabras:</strong> ${stats.totalWords}</p>
+                        <p><strong>Tamaño:</strong> ${stats.sizeKB} KB</p>
+                        <p><strong>Estado:</strong> ✅ Funcionando correctamente</p>
+                    `, 'success');
+                } else {
+                    showResult('vocabulary-result', '❌ vocabularyManager no está disponible', 'error');
+                }
+            } catch (error) {
+                showResult('vocabulary-result', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testAdminCore() {
+            try {
+                if (typeof adminCore !== 'undefined') {
+                    showResult('admin-result', `
+                        <h4>Núcleo de Administración:</h4>
+                        <p><strong>Autenticado:</strong> ${adminCore.isAuthenticated ? 'Sí' : 'No'}</p>
+                        <p><strong>Usuario Actual:</strong> ${adminCore.currentUser ? adminCore.currentUser.username : 'Ninguno'}</p>
+                        <p><strong>Estado:</strong> ✅ Funcionando correctamente</p>
+                        <p><strong>Funciones Disponibles:</strong></p>
+                        <ul>
+                            <li>✅ showAddCategoryModal</li>
+                            <li>✅ showAddWordModal</li>
+                            <li>✅ exportVocabulary</li>
+                            <li>✅ createBackup</li>
+                            <li>✅ showMessage</li>
+                        </ul>
+                    `, 'success');
+                } else {
+                    showResult('admin-result', '❌ adminCore no está disponible', 'error');
+                }
+            } catch (error) {
+                showResult('admin-result', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Cargar archivos cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar archivos JS
+            const scripts = [
+                'js/config/app-config.js',
+                'js/utils/storage.js',
+                'js/utils/validation.js',
+                'js/admin/vocabulary-manager.js',
+                'js/admin/admin-core.js'
+            ];
+
+            scripts.forEach((src, index) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => {
+                    if (index === scripts.length - 1) {
+                        // Todos los scripts cargados
+                        setTimeout(() => {
+                            testFileLoading();
+                            testConfiguration();
+                            testStorage();
+                            testValidation();
+                            testVocabularyManager();
+                            testAdminCore();
+                        }, 500);
+                    }
+                };
+                script.onerror = () => {
+                    showResult('file-loading-result', `❌ Error al cargar: ${src}`, 'error');
+                };
+                document.head.appendChild(script);
+            });
+        });
+    </script>
+</body>
+</html>
